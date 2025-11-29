@@ -1,191 +1,173 @@
 <!DOCTYPE html>
-<html lang="cn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="./临时备份数据/favicon.ico" type="image/x-icon">
-    <title>提示词</title>
+    <title>jimieguang | Developer Portfolio</title>
+    <!-- 引入图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
+        /* --- 基础样式 --- */
+        :root {
+            --primary-color: #0969da;
+            --bg-color: #f6f8fa;
+            --card-bg: #ffffff;
+            --text-main: #24292f;
+            --text-secondary: #57606a;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
         }
-        .item {
-            margin: 20px;
-            border: 1px solid #ccc;
-            padding: 10px;
-            display: flex;
-            flex-direction: row;
-        }
-        .item-number {
-            font-size: 24px;
-            margin-right: 10px;
-        }
-        .item-content {
-            flex-grow: 1;
-            overflow-x: auto;
-        }
-        .copy-button {
-            background-color: #06abf8e8;
-            color: #fff;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-        }
-        .toast {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #333;
-            color: #fff;
-            padding: 10px 20px;
-            border-radius: 5px;
-            opacity: 0.8;
-        }
-        .category-labels {
-    position: fixed;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 10px 0;
-    z-index: 999; /* 确保按钮在其他内容之上 */
-}
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        
+        /* 头部样式 */
+        header { text-align: center; margin-bottom: 50px; }
+        .avatar { width: 140px; height: 140px; border-radius: 50%; border: 4px solid white; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .name { font-size: 2.2rem; font-weight: 700; margin-bottom: 10px; }
+        .badges { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;}
+        .badge { background: #ddf4ff; color: #0969da; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
+        .bio { color: var(--text-secondary); font-size: 1.1rem; max-width: 600px; margin: 0 auto 25px; }
+        .social-links { display: flex; justify-content: center; gap: 25px; font-size: 1.6rem; color: var(--text-secondary); }
+        
+        /* 项目展示样式 */
+        section { margin-bottom: 60px; }
+        .section-title { font-size: 1.5rem; margin-bottom: 24px; border-bottom: 1px solid #d0d7de; padding-bottom: 10px; }
+        .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .project-card { background: var(--card-bg); padding: 24px; border: 1px solid #d0d7de; border-radius: 6px; display: flex; flex-direction: column; }
+        .project-title { font-size: 1.1rem; font-weight: 700; color: var(--primary-color); margin-bottom: 10px; }
+        .project-desc { font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 20px; flex-grow: 1; }
+        .tech-stack { font-size: 0.8rem; color: #6e7781; display: flex; gap: 10px; margin-top: auto; }
+        .tech-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; }
 
-.category-label {
-    margin: 10px;
-    cursor: pointer;
-    padding: 5px 15px;
-    background-color: #eee;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    color: #333;
-    transition: background-color 0.3s ease;
-}
+        /* 支付区域样式 (审核重点) */
+        .donate-section {
+            background: #fff;
+            border: 1px solid #d0d7de;
+            padding: 40px 30px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .donate-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 10px; }
+        .donate-text { margin-bottom: 25px; color: var(--text-secondary); font-size: 0.95rem; }
+        
+        /* PayPal 按钮容器 */
+        #paypal-button-container {
+            max-width: 300px; /* 限制宽度，让按钮看起来更整洁 */
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            min-height: 150px; /* 防止加载时布局跳动 */
+        }
 
-.category-label:hover {
-    background-color: #ccc;
-    color: #fff;
-}
+        footer { text-align: center; color: var(--text-secondary); font-size: 0.85rem; padding-top: 40px; border-top: 1px solid #d0d7de; }
     </style>
 </head>
 <body>
-    <!-- 标题及内容 -->
-    <div id="itemsContainer"></div>
-    
-    <!-- 弹窗提示 -->
-    <div class="toast" id="toast"></div>
 
-    <!-- 切换类别 -->
-    <div class="category-labels">
-        <div class="category-label" onclick="showCategory('category1')">编程</div>
-        <div class="category-label" onclick="showCategory('category2')">英语</div>
-        <!-- 添加更多分类标签 -->
+    <div class="container">
+        <!-- 个人资料 -->
+        <header>
+            <img src="https://github.com/jimieguang.png" alt="jimieguang" class="avatar">
+            <h1 class="name">jimieguang</h1>
+            <div class="badges">
+                <span class="badge">Python</span><span class="badge">C/C++</span><span class="badge">Go</span>
+            </div>
+            <!-- 使用英文简介以通过国际审核 -->
+            <p class="bio">Developer specializing in Automation Tools & Embedded Systems. Creator of utility scripts and robot interfaces.</p>
+            <div class="social-links">
+                <a href="https://github.com/jimieguang" target="_blank"><i class="fab fa-github"></i></a>
+            </div>
+        </header>
+
+        <!-- 项目展示 -->
+        <section>
+            <h2 class="section-title">Open Source Projects</h2>
+            <div class="project-grid">
+                <div class="project-card">
+                    <div class="project-title">colorful-tank</div>
+                    <p class="project-desc">A high-quality image processing tool for creating phantom tanks (images that look different on black vs white backgrounds).</p>
+                    <div class="tech-stack"><span class="tech-dot" style="background:#3572A5;"></span>Python</div>
+                </div>
+                <div class="project-card">
+                    <div class="project-title">AkuDisplay</div>
+                    <p class="project-desc">Hardware interface package written in C and Go for robot control services and embedded systems.</p>
+                    <div class="tech-stack"><span class="tech-dot" style="background:#00ADD8;"></span>Go / C</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 支付/赞助区域 (审核核心) -->
+        <section id="donate">
+            <div class="donate-section">
+                <h2 class="donate-title">Sponsor My Work</h2>
+                <p class="donate-text">
+                    Support the continuous development of my open-source tools.<br>
+                    <strong>Sponsorship: $5.00 USD</strong>
+                </p>
+                
+                <!-- PayPal 按钮加载位置 -->
+                <div id="paypal-button-container"></div>
+                
+                <p style="margin-top: 15px; font-size: 0.8rem; color: #888;">
+                    <i class="fas fa-lock"></i> Secure payment processed by PayPal.
+                </p>
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; 2024 jimieguang. All rights reserved.</p>
+            <p>Contact: <a href="mailto:jimieguang@gmail.com">jimieguang@gmail.com</a></p>
+        </footer>
     </div>
 
-    <!-- 添加更多的项目 -->
+    <!-- ======================================================= -->
+    <!-- PayPal JavaScript SDK -->
+    <!-- 已填入您的 Client ID: AZr7WSrK_Nk8K-ZOVp5QttTEeDrEuwQh6DtJ5Q24A17_T8ZaWNojkqYjCJ8FnOI4PKwUMig9OkNIcsGl -->
+    <!-- ======================================================= -->
+    <script src="https://www.paypal.com/sdk/js?client-id=AZr7WSrK_Nk8K-ZOVp5QttTEeDrEuwQh6DtJ5Q24A17_T8ZaWNojkqYjCJ8FnOI4PKwUMig9OkNIcsGl&currency=USD"></script>
 
     <script>
-        const itemsData = [
-            {
-                title: '分析',
-                description: '请分析这段代码，并检查其中可能存在的错误',
-                category: 'category1' // 分类标签
+        paypal.Buttons({
+            // 样式配置：使用最标准的 PayPal 金色按钮，符合审核直觉
+            style: {
+                shape: 'rect',
+                color: 'gold',
+                layout: 'vertical',
+                label: 'donate'
             },
-            {
-                title: '测试',
-                description: '请根据这个函数的输入参数格式，编写对应的易于编辑修改的测试样例',
-                category: 'category1' // 分类标签
-            },
-            {
-                title: '分析',
-                description: '请阅读这篇文章，并等待我的提问',
-                category: 'category2' // 分类标签
-            },
-            {
-                title: '选择',
-                description: '从选项中挑选出最合适的句子回答我的问题，并告诉我理由（使用中文回复，需要引用文章句子时可以用英文）',
-                category: 'category2' // 分类标签
-            },
-            {
-                title: '解释',
-                description: '解释下其他选项的错误之处',
-                category: 'category2' // 分类标签
-            },
-            {
-                title: '翻译',
-                description: '阅读这篇短文，等待我给予中文翻译，指出其中翻译不到位的地方，如果能理解我说的话，请回答Yes',
-                category: 'category2' // 分类标签
-            },
-            {
-                title: '作文',
-                description: '阅读以下作文题目，了解其中的要求和评分标准，等待我输入的答案，并对答案进行评析，如果了解我说的意思，请回答yes',
-                category: 'category2' // 分类标签
-            },
-            // 添加更多项目数据
-        ];
-        const itemsContainer = document.getElementById('itemsContainer');
-        const toast = document.getElementById('toast');
-        function createItemElement(item, index) {
-            const itemElement = document.createElement('div');
-            itemElement.classList.add('item');
-            
-            const itemNumber = document.createElement('div');
-            itemNumber.classList.add('item-number');
-            itemNumber.textContent = (index + 1) + '.';
-            
-            const itemContent = document.createElement('div');
-            itemContent.classList.add('item-content');
-            const itemTitle = document.createElement('h2');
-            itemTitle.textContent = item.title;
-            const itemDescription = document.createElement('p');
-            itemDescription.textContent = item.description;
-            itemContent.appendChild(itemTitle);
-            itemContent.appendChild(itemDescription);
-            
-            const copyButton = document.createElement('button');
-            copyButton.classList.add('copy-button');
-            copyButton.textContent = '复制';
-            
-            copyButton.addEventListener('click', () => {
-                const textToCopy = item.description;
-                const textArea = document.createElement('textarea');
-                textArea.value = textToCopy;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
-                
-                // 创建并显示toast通知
-                toast.textContent = `复制成功`;
-                toast.style.display = 'block';
-                
-                // 自动消失
-                setTimeout(() => {
-                    toast.style.display = 'none';
-                }, 1000); // 1秒后消失
-            });
 
-            itemElement.appendChild(itemNumber);
-            itemElement.appendChild(itemContent);
-            itemElement.appendChild(copyButton);
+            // 创建订单：设置固定金额 $5.00
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        description: "Sponsorship for jimieguang open source projects",
+                        amount: {
+                            value: '5.00' 
+                        }
+                    }]
+                });
+            },
 
-            return itemElement;
-        }
-        
-        function showCategory(category) {
-            itemsContainer.innerHTML = ''; // 清空内容
-            let itemNumber  = 0;
-            itemsData.forEach((item, index) => {
-                if (item.category === category) {
-                    const itemElement = createItemElement(item, itemNumber);
-                    itemsContainer.appendChild(itemElement);
-                    itemNumber++;
-                }
-            });
-        }
-        showCategory('category1');
-    
+            // 支付成功回调
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(details) {
+                    alert('Thank you for your support, ' + details.payer.name.given_name + '!');
+                });
+            },
+
+            // 错误处理
+            onError: function (err) {
+                console.error('PayPal Button Error:', err);
+            }
+        }).render('#paypal-button-container');
     </script>
 </body>
 </html>
